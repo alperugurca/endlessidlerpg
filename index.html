@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Endless Idle RPG</title>
+    <meta
+      name="description"
+      content="Endless Idle RPG is an offline idle RPG for Android with endless battles, local saves, and hero upgrades."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #111017;
+        --surface: #191721;
+        --surface-2: #23202d;
+        --text: #f7f0ff;
+        --muted: #c8bfd4;
+        --line: #393344;
+        --green: #79e4ae;
+        --gold: #f2cb72;
+        --red: #f07d82;
+        --blue: #83b6ff;
+        --shadow: 0 18px 55px rgb(0 0 0 / 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.6;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .wrap {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        border-bottom: 1px solid rgb(255 255 255 / 0.08);
+        background: rgb(17 16 23 / 0.86);
+        backdrop-filter: blur(16px);
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 64px;
+        gap: 16px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .brand img {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+      }
+
+      .links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .links a,
+      .button {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 8px;
+        border: 1px solid rgb(255 255 255 / 0.12);
+        padding: 8px 12px;
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 700;
+        max-width: 100%;
+        min-width: 0;
+        white-space: nowrap;
+        text-align: center;
+      }
+
+      .button.primary {
+        background: var(--green);
+        color: #102017;
+        border-color: transparent;
+      }
+
+      main {
+        overflow: hidden;
+      }
+
+      .hero {
+        min-height: calc(100svh - 64px);
+        display: grid;
+        align-items: center;
+        padding: clamp(36px, 7vw, 82px) 0;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+        gap: clamp(28px, 5vw, 64px);
+        align-items: center;
+      }
+
+      .hero-grid > *,
+      .content-grid > * {
+        min-width: 0;
+      }
+
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--gold);
+        font-weight: 800;
+        letter-spacing: 0;
+        margin: 0 0 12px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.75rem, 8vw, 6.5rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+        overflow-wrap: break-word;
+      }
+
+      .lead {
+        max-width: 640px;
+        margin: 22px 0 0;
+        color: var(--muted);
+        font-size: clamp(1.06rem, 2vw, 1.28rem);
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+      }
+
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 30px;
+      }
+
+      .fact {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgb(255 255 255 / 0.04);
+        padding: 12px;
+      }
+
+      .fact strong {
+        display: block;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+
+      .fact span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.86rem;
+        margin-top: 2px;
+      }
+
+      .phone-stack {
+        position: relative;
+        min-height: 560px;
+      }
+
+      .phone {
+        position: absolute;
+        width: min(270px, 44vw);
+        border-radius: 28px;
+        border: 10px solid #0a0910;
+        background: #0a0910;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .phone img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 9 / 19;
+        object-fit: cover;
+      }
+
+      .phone.one {
+        right: 22%;
+        top: 0;
+        transform: rotate(-5deg);
+      }
+
+      .phone.two {
+        right: 0;
+        top: 96px;
+        transform: rotate(6deg);
+      }
+
+      .section {
+        padding: clamp(46px, 7vw, 84px) 0;
+        border-top: 1px solid rgb(255 255 255 / 0.08);
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.7rem, 4vw, 3rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .section-head p {
+        max-width: 560px;
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .screens {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .screen {
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        overflow: hidden;
+      }
+
+      .screen img {
+        width: 100%;
+        display: block;
+        aspect-ratio: 9 / 19;
+        object-fit: cover;
+      }
+
+      .screen figcaption {
+        padding: 10px 12px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        padding: clamp(20px, 3vw, 30px);
+      }
+
+      .panel h3 {
+        margin: 0 0 10px;
+        font-size: 1.25rem;
+      }
+
+      .panel h2 {
+        margin: 0 0 12px;
+        font-size: clamp(1.45rem, 3vw, 2.1rem);
+        line-height: 1.12;
+      }
+
+      .panel p {
+        color: var(--muted);
+        margin: 0 0 14px;
+      }
+
+      .panel ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--muted);
+      }
+
+      .policy {
+        display: grid;
+        gap: 16px;
+      }
+
+      .policy h3 {
+        margin: 0 0 6px;
+        font-size: 1.1rem;
+      }
+
+      .policy p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .play-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 24px;
+        background:
+          linear-gradient(135deg, rgb(121 228 174 / 0.14), rgb(131 182 255 / 0.08)),
+          var(--surface);
+      }
+
+      .play-box .button {
+        align-self: flex-start;
+        justify-self: start;
+        padding-inline: 18px;
+      }
+
+      .store-label {
+        display: inline-flex;
+        margin-bottom: 10px;
+        color: var(--green);
+        font-size: 0.86rem;
+        font-weight: 800;
+      }
+
+      .store-actions {
+        display: grid;
+        gap: 12px;
+      }
+
+      .package-line {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .package-line code {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 2px 7px;
+        border: 1px solid rgb(255 255 255 / 0.12);
+        border-radius: 6px;
+        background: rgb(0 0 0 / 0.2);
+      }
+
+      code {
+        color: var(--text);
+        font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      }
+
+      footer {
+        border-top: 1px solid rgb(255 255 255 / 0.08);
+        padding: 28px 0;
+        color: var(--muted);
+      }
+
+      @media (max-width: 860px) {
+        nav {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 12px 0;
+        }
+
+        .links {
+          justify-content: flex-start;
+        }
+
+        .hero {
+          min-height: auto;
+        }
+
+        .hero-grid,
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .phone-stack {
+          min-height: 450px;
+        }
+
+        .phone {
+          width: min(230px, 54vw);
+        }
+
+        .phone.one {
+          left: 5%;
+          right: auto;
+        }
+
+        .phone.two {
+          right: 4%;
+        }
+
+        .facts,
+        .screens {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .section-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .wrap {
+          width: min(100% - 24px, 1120px);
+        }
+
+        .links a,
+        .button {
+          width: 100%;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+          width: 100%;
+          padding-right: 24px;
+        }
+
+        .hero-actions .button {
+          align-self: flex-start;
+          width: calc(100% - 24px);
+        }
+
+        .facts,
+        .screens {
+          grid-template-columns: 1fr;
+        }
+
+        .phone-stack {
+          min-height: 390px;
+        }
+
+        .phone {
+          border-width: 8px;
+          border-radius: 22px;
+          width: min(190px, 58vw);
+        }
+
+        .button {
+          white-space: normal;
+        }
+
+        h1 {
+          font-size: clamp(2.35rem, 11vw, 2.7rem);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="wrap" aria-label="Main navigation">
+        <a class="brand" href="#top">
+          <img src="images/icon.png" alt="Endless Idle RPG icon" />
+          <span>Endless Idle RPG</span>
+        </a>
+        <div class="links">
+          <a href="#screenshots">Screenshots</a>
+          <a href="#privacy">Privacy Policy</a>
+          <a
+            class="button primary"
+            href="https://play.google.com/store/apps/details?id=com.ae.endlessidlerpg"
+          >
+            Google Play
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <p class="kicker">Offline Android Idle RPG</p>
+            <h1>Endless Idle RPG</h1>
+            <p class="lead">
+              Battle endless enemies, earn gold and XP, upgrade your hero, and
+              keep progressing with local saves. No internet connection is
+              required to play.
+            </p>
+            <div class="hero-actions">
+              <a
+                class="button primary"
+                href="https://play.google.com/store/apps/details?id=com.ae.endlessidlerpg"
+              >
+                Open on Google Play
+              </a>
+              <a class="button" href="#privacy">Read Privacy Policy</a>
+            </div>
+            <div class="facts" aria-label="Game facts">
+              <div class="fact">
+                <strong>Offline</strong>
+                <span>Designed without internet permission</span>
+              </div>
+              <div class="fact">
+                <strong>Local Saves</strong>
+                <span>Progress stays on the device</span>
+              </div>
+              <div class="fact">
+                <strong>Package</strong>
+                <span>com.ae.endlessidlerpg</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="phone-stack" aria-label="Game preview">
+            <div class="phone one">
+              <img src="images/endlessidlerpg1.png" alt="Endless Idle RPG battle screen" />
+            </div>
+            <div class="phone two">
+              <img src="images/endlessidlerpg2.png" alt="Endless Idle RPG upgrade screen" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="screenshots">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Screenshots</h2>
+            <p>
+              Gameplay screens showing combat, upgrades, progression, and idle
+              RPG stats.
+            </p>
+          </div>
+          <div class="screens">
+            <figure class="screen">
+              <img src="images/endlessidlerpg1.png" alt="Gameplay combat screenshot" />
+              <figcaption>Combat</figcaption>
+            </figure>
+            <figure class="screen">
+              <img src="images/endlessidlerpg2.png" alt="Upgrade panel screenshot" />
+              <figcaption>Upgrades</figcaption>
+            </figure>
+            <figure class="screen">
+              <img src="images/endlessidlerpg3.png" alt="Battle progress screenshot" />
+              <figcaption>Progress</figcaption>
+            </figure>
+            <figure class="screen">
+              <img src="images/endlessidlerpg4.png" alt="Hero stats screenshot" />
+              <figcaption>Stats</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap content-grid">
+          <article class="panel">
+            <h2>Short Description</h2>
+            <p>Offline idle RPG game. Android app.</p>
+            <h3>Game Features</h3>
+            <ul>
+              <li>Auto battle enemies and progress offline.</li>
+              <li>Earn gold and XP from defeated enemies.</li>
+              <li>Buy attack, defense, HP, critical, regeneration, and bonus upgrades.</li>
+              <li>Fight endlessly scaling enemy types.</li>
+            </ul>
+          </article>
+
+          <article class="panel play-box">
+            <div>
+              <span class="store-label">Google Play</span>
+              <h2>Download Endless Idle RPG</h2>
+              <p>
+                Install the offline idle RPG from Google Play and keep your
+                progress stored locally on your device.
+              </p>
+            </div>
+            <div class="store-actions">
+              <a
+                class="button primary"
+                href="https://play.google.com/store/apps/details?id=com.ae.endlessidlerpg"
+              >
+                Open on Google Play
+              </a>
+              <p class="package-line">
+                Package <code>com.ae.endlessidlerpg</code>
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="privacy">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Privacy Policy</h2>
+            <p>Last updated: June 2026</p>
+          </div>
+          <article class="panel policy">
+            <section>
+              <h3>Overview</h3>
+              <p>Endless Idle RPG is designed as an offline game.</p>
+            </section>
+
+            <section>
+              <h3>Data Collection</h3>
+              <p>
+                The app does not intentionally collect, transmit, sell, or share
+                personal data.
+              </p>
+            </section>
+
+            <section>
+              <h3>Local Game Progress</h3>
+              <p>
+                Game progress is saved locally on the device using localStorage
+                inside the app's WebView. Saved data may include player HP, attack,
+                defense, level, XP, gold, enemy progress, purchased upgrade
+                levels, and auto attack setting. This save data remains on the
+                user's device and is not transmitted by the app.
+              </p>
+            </section>
+
+            <section>
+              <h3>Internet Access</h3>
+              <p>
+                The Android app is designed to work offline and does not request
+                <code>android.permission.INTERNET</code>.
+              </p>
+            </section>
+
+            <section>
+              <h3>Analytics and Ads</h3>
+              <p>
+                The app does not include a runtime analytics SDK or advertising
+                SDK.
+              </p>
+            </section>
+
+            <section>
+              <h3>Data Deletion</h3>
+              <p>
+                Users can delete local game progress by clearing the app's
+                storage and cache from Android settings, uninstalling the app, or
+                using any reset option available in the game.
+              </p>
+            </section>
+
+            <section>
+              <h3>Contact</h3>
+              <p>
+                For privacy questions, use the contact information listed on the
+                Google Play store page:
+                <a href="https://play.google.com/store/apps/details?id=com.ae.endlessidlerpg">
+                  https://play.google.com/store/apps/details?id=com.ae.endlessidlerpg
+                </a>
+              </p>
+            </section>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">Endless Idle RPG - Offline Android Idle RPG</div>
+    </footer>
+  </body>
+</html>
